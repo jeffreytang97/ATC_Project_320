@@ -15,11 +15,13 @@ public:
 		position[2] = newAltitude;
 	}
 
-	void speedChange(int newSpeed) {
-		speed = newSpeed;
+	void speedChange(int new_x_speed, int new_y_speed, int new_z_speed) {
+		x_speed = new_x_speed;
+		y_speed = new_y_speed;
+		z_speed = new_z_speed;
 	}
 
-	void positionChange(int x, int y, int z) { // by the ATC
+	void positionDirectionChange(int x, int y, int z) { // by the ATC
 		position[0] = x;
 		position[1] = y;
 		position[2] = z;
@@ -39,12 +41,14 @@ public:
 				cout << position[i] << ")";
 		}
 
-		cout << endl << "Aircraft current speed: " << speed << endl;
+		int speedValue = pow(x_speed, 2) + pow(y_speed, 2) + pow(z_speed, 2);
+
+		cout << endl << "Aircraft current speed: " << pow(speedValue,0.5) << endl;
 	}
 
-	void aircraftPositionProjection() {
+	/*void aircraftPositionProjection() {
 	
-	}
+	}*/
 
 	int getId() {
 		return aircraft_id;
@@ -54,12 +58,22 @@ public:
 		return position;
 	}
 
-	int getSpeed() {
-		return speed;
+	int getXSpeed() {
+		return x_speed;
+	}
+
+	int getYSpeed() {
+		return y_speed;
+	}
+
+	int getZSpeed() {
+		return z_speed;
 	}
 
 private:
 	int aircraft_id;
 	array<int, 3> position; // (x,y,z) coordinates
-	int speed;
+	int x_speed;
+	int y_speed;
+	int z_speed;
 };

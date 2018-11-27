@@ -87,6 +87,10 @@ void trackerFile(Aircraft airplane) {
 	collisionAvoidance();
 }
 
+void aircraftMovement() {
+
+}
+
 // store full hit list in history log every 60 seconds
 void storeAirspaceStateInLog() {
 
@@ -130,7 +134,7 @@ void broadcast() {
 
 }
 
-void lostObjects() {
+void detectLostObjects() {
 
 }
 
