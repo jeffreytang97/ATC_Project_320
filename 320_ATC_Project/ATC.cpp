@@ -26,7 +26,7 @@ void addToLog(Aircraft airplane, int x, int y, int z) {
 	int counter = 0;
 
 	// if in those coordinates, then airplane in the airspace
-	if ((x <= 50 & x >= -50) && (y <= 50 & y >= -50) && (z >= 15000 & z <= 40000)) {
+	if ((x <= 100000 & x >= 0) && (y <= 100000 & y >= 0) && (z >= 0 & z <= 25000)) {
 
 		for (int i = 0; i < Hit.size(); i++)
 		{
@@ -53,7 +53,7 @@ void deleteFromLog(Aircraft airplane, int x, int y, int z) {
 
 	int id = airplane.getId();
 
-	if ((x > 50 | x < -50) || (y > 50 | y < -50) || (z > 40000 | z < 15000)) {
+	if ((x > 100000 | x < 0) || (y > 100000 | y < 0) || (z > 25000 | z < 0)) {
 
 		for (int i = 0; i < Hit.size(); i++)
 		{
@@ -74,8 +74,8 @@ void collisionAvoidance() {
 // executes every 15 seconds to scan airplanes from the airfield
 void trackerFile(Aircraft airplane) {
 
-	// airspace dimensions are 100 x 100 miles (x,y) --> coordinates starts at origin from the middle, therefore -50 to 50 for x and y
-	// height is 25000 ft and start at 15000 ft (above sea level) --> from 15000 to 40000 feet
+	// airspace dimensions are 100 x 100 miles (x,y) --> coordinates starts at origin from a corner, therefore 0 to 100000 in x and y
+	// height is 25000 ft --> from 0 to 25000 feet
 
 	array<int, 3> coordinates = airplane.getPosition();
 	int & x = coordinates[0];
