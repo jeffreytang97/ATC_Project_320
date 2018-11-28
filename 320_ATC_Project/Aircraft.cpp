@@ -15,12 +15,6 @@ public:
 		position[2] = newAltitude;
 	}
 
-	void speedChange(int new_x_speed, int new_y_speed, int new_z_speed) {
-		x_speed = new_x_speed;
-		y_speed = new_y_speed;
-		z_speed = new_z_speed;
-	}
-
 	void positionDirectionChange(int x, int y, int z) { // by the ATC
 		position[0] = x;
 		position[1] = y;
@@ -69,6 +63,19 @@ public:
 	int getZSpeed() {
 		return z_speed;
 	}
+
+	void setXSpeed(int new_x_speed) {
+		x_speed = new_x_speed;
+	}
+
+	void setYSpeed(int new_y_speed) {
+		y_speed = new_y_speed;
+	}
+
+	void setZSpeed(int new_z_speed) {
+		z_speed = new_z_speed;
+	}
+
 
 private:
 	int aircraft_id;
