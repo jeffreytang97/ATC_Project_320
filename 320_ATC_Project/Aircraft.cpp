@@ -11,14 +11,56 @@ using namespace std;
 class Aircraft {          
 
 public:
-	void altitudeChange(int newAltitude) {
-		position[2] = newAltitude;
+	 
+	//Constructor
+	Aircraft(int id, int speed_x, int speed_y, int speed_z, int x, int y, int z, int entryTime) {
+		
+		aircraft_id = id;
+		x_speed = speed_x;
+		y_speed = speed_y;
+		z_speed = speed_z;
+		x_coord = x;
+		y_coord = y;
+		z_coord = z;
+		entry_time = entryTime;
 	}
 
-	void positionDirectionChange(int x, int y, int z) { // by the ATC
-		position[0] = x;
-		position[1] = y;
-		position[2] = z;
+	int getId() {
+		return aircraft_id;
+	}
+
+	int getEntryTime() {
+		return entry_time;
+	}
+
+	void setX_coord(int x) { // for change altitude feature
+		x_coord = x;
+	}
+
+	void setY_coord(int y) {
+		y_coord = y;
+	}
+
+	void setZ_coord(int newAltitude) {
+		z_coord = newAltitude;
+	}
+
+	int getX_coord() {
+		return x_coord;
+	}
+
+	int getY_coord() {
+		return y_coord;
+	}
+
+	int getZ_coord() {
+		return z_coord;
+	}
+
+	void positionChange(int x, int y, int z) { // by the ATC, for the aircraft movement function
+		x_coord = x;
+		y_coord = y;
+		z_coord = z;
 	}
 
 	bool holdingPattern() {
@@ -26,31 +68,16 @@ public:
 	}
 
 	void reportAircraftUpdate() {
-		cout << aircraft_id << endl << "(";
-		for (int i = 0; i < position.size(); i++)
-		{
-			if (i != 2)
-				cout << position[i] << ",";
-			else
-				cout << position[i] << ")";
-		}
-
+		cout << "aircraft --> " << aircraft_id << ", (" << x_coord << "," << y_coord << "," << z_coord << ")" << endl;;
+		
 		int speedValue = pow(x_speed, 2) + pow(y_speed, 2) + pow(z_speed, 2);
 
-		cout << endl << "Aircraft current speed: " << pow(speedValue,0.5) << endl;
+		cout << endl << "Aircraft " << aircraft_id << " current speed: " << pow(speedValue,0.5) << endl << endl;
 	}
 
 	/*void aircraftPositionProjection() {
 	
 	}*/
-
-	int getId() {
-		return aircraft_id;
-	}
-
-	array<int, 3> getPosition() {
-		return position;
-	}
 
 	int getXSpeed() {
 		return x_speed;
@@ -76,11 +103,10 @@ public:
 		z_speed = new_z_speed;
 	}
 
-
 private:
+
 	int aircraft_id;
-	array<int, 3> position; // (x,y,z) coordinates
-	int x_speed;
-	int y_speed;
-	int z_speed;
+	int x_coord, y_coord, z_coord;               
+	int x_speed, y_speed, z_speed;
+	int entry_time;
 };
