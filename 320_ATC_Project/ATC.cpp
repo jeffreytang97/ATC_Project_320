@@ -131,13 +131,20 @@ void aircraftMovement(Aircraft airplane) {
 }
 
 // store full hit list in history log every 60 seconds
-void historyLog(vector<Aircraft> hitList, ostream& file) {
-	
+void historyLog(vector<Aircraft> hitList, ostream &file) {
+
+	file << "ID: " << hitList[0].getId() << "X position: " << hitList[0].getX_coord() << "Y position: " << hitList[0].getY_coord()
+		<< "Z position: " << hitList[0].getZ_coord() << "Entry time: " << hitList[0].getEntryTime() << "X velocity: " << hitList[0].getXSpeed()
+		<< "Y Velocity: " << hitList[0].getYSpeed() << "Z Velocity" << hitList[0].getZSpeed() << endl;
+
+	/*
 	for (int i = 0; i < hitList.size(); i++)
 	{
-		
+		file << "ID: " << hitList[i].getId() << "X position: " << hitList[i].getX_coord() << "Y position: " << hitList[i].getY_coord()
+			<< "Z position: " << hitList[i].getZ_coord() << "Entry time: " << hitList[i].getEntryTime() << "X velocity: " << hitList[i].getXSpeed()
+			<< "Y Velocity: " << hitList[i].getYSpeed() << "Z Velocity" << hitList[i].getZSpeed() << endl;
 	}
-
+	*/
 }
 
 // display all aircraft from the airspace
@@ -228,6 +235,7 @@ int main() {
 
 	//timer_start(do_something, 1);
 
+
 	int airplane_schedule[160] = { // each line represents an aircraft (ID, speed_x, speed_y, speed_z, x, y, z, entry time)
 
 		0, -641, 283, 500, 95000, 101589, 10000, 13, // a1
@@ -283,6 +291,24 @@ int main() {
 	start_timer_display(displayAirspace, Hit, 5);
 
 	while (true);
+
+
+	//vector <Aircraft> hitList;
+
+	//addToLog(a1, -641, 283, 500);
+	//addToLog(a2, -223, -630, -526);
+
+	//displayAirspace(hitList);
+
+	//system("pause");
+
+	//ofstream file;
+	//file.open("historyLog.txt");
+
+	//historyLog(hitList, file);
+
+	//file.close();
+
 
 	return 0;
 }
