@@ -1,3 +1,4 @@
+#include <string>
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -7,11 +8,13 @@
 #include <list>
 #include <ctime>
 #include "Aircraft.cpp"
+#include <fstream>
 
 #pragma warning(disable:4996)
 
 using namespace std;
 
+//LIST OF ALL PLANES CURRENTLY IN THE SPACE
 vector<Aircraft> Hit; 
 
 // ATC data and functions handling
@@ -115,7 +118,12 @@ void aircraftMovement(Aircraft airplane) {
 }
 
 // store full hit list in history log every 60 seconds
-void storeAirspaceStateInLog() {
+void historyLog(vector<Aircraft> hitList, ostream& file) {
+	
+	for (int i = 0; i < hitList.size(); i++)
+	{
+		
+	}
 
 }
 
@@ -141,20 +149,28 @@ void displayAirspace(vector<Aircraft> hitList) {
 
 
 // Communications
-void communicationsHandler() { // messages in queues
+void communicationsHandler(int aircraftID, string msg) { // messages in queues
+
+	
 
 }
 
-void send() {
+void send(int aircraftID, string msg) {
+
+	cout << "To the aircraft with ID: " + aircraftID << endl;
+	cout << "Please " + msg << endl;
 
 }
 
-void broadcast() {
-
+void broadcast(string msg) {
+	cout << "To all airplanes, " + msg << endl;
 }
 
-void detectLostObjects() {
-
+void detectLostObjects(int aircraftID) {
+	if (aircraftID < 0) {
+		string msg = "Identify yourselves";
+		broadcast(msg);
+	}
 }
 
 // detect or handle any failures including missed deadlines and failure of an aircraft to respond to an operator command
@@ -184,6 +200,7 @@ void do_something() // only to test the clock
 {
 	std::cout << "I am doing something" << std::endl;
 }
+
 
 int main() {
 
