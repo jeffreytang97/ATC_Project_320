@@ -1,0 +1,2 @@
+ID: 2018 X position: 0 Y position: 0 Z position: 0 Entry time: 2 X velocity: 200 Y Velocity: 150 Z Velocity100
+ID: 2222 X position: 500 Y position: 250 Z position: 0 Entry time: 4 X velocity: 100 Y Velocity: 200 Z Velocity400
