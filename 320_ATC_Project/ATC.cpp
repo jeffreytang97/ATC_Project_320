@@ -142,20 +142,24 @@ void historyLog(vector<Aircraft> hitList, ostream& file) {
 
 // display all aircraft from the airspace
 // every 5 seconds to see the changes in the airspace
-void displayAirspace(vector<Aircraft> hitList) { 
+void displayAirspace() { 
 
-	for (int i = 0; i < hitList.size(); i++)
+	for (int i = 0; i < Hit.size(); i++)
 	{
-		int id = hitList[i].getId(); 
-		int x = hitList[i].getX_coord();
-		int y = hitList[i].getY_coord();
-		int z = hitList[i].getZ_coord();
+		int id = Hit[i].getId(); 
+		int x = Hit[i].getX_coord();
+		int y = Hit[i].getY_coord();
+		int z = Hit[i].getZ_coord();
+
+		int x_speed = Hit[i].getXSpeed();
+		int y_speed = Hit[i].getYSpeed();
+		int z_speed = Hit[i].getZSpeed();
 
 		cout << "aircraft --> " << id << ", (" << x << "," << y << "," << z << ")" << endl;
 
-		int speedValue = pow(x, 2) + pow(y, 2) + pow(z, 2);
+		int speedValue = pow(x_speed, 2) + pow(y_speed, 2) + pow(z_speed, 2);
 
-		cout << endl << "Aircraft " << id << " current speed: " << pow(speedValue, 0.5) << endl;
+		cout << id << " current speed: " << pow(speedValue, 0.5) << endl;
 		cout << endl;
 	}
 }
@@ -202,12 +206,12 @@ void start_timer_tracker(function<void(Aircraft)> func, Aircraft airplane, unsig
 }
 
 // Create thread for the display function
-void start_timer_display(function<void(vector<Aircraft>)> func, vector<Aircraft> hit, unsigned int interval)
+void start_timer_display(function<void(void)> func, unsigned int interval)
 {
-	thread([func, hit, interval]() {
+	thread([func, interval]() {
 		while (true)
 		{
-			func(hit);
+			func();
 			this_thread::sleep_for(chrono::seconds(interval));
 		}
 	}).detach();
@@ -280,7 +284,7 @@ int main() {
 	start_timer_tracker(trackerFile, aTest1, 1);
 	start_timer_tracker(trackerFile, aTest2, 1);
 
-	start_timer_display(displayAirspace, Hit, 5);
+	start_timer_display(displayAirspace, 5);
 
 	while (true);
 
