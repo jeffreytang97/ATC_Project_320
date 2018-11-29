@@ -37,13 +37,12 @@ void broadcast(string msg) {
 	cout << endl << "To all airplanes, " + msg << endl;
 }
 
-bool detectLostObjects(int aircraftID) {
+void detectLostObjects(int aircraftID) {
 	if (aircraftID < 0) {
 		string msg = "Identify yourselves";
 		broadcast(msg);
-		return true;
+	
 	}
-	return false;
 }
 
 // add into Hit list when aircraft in airspace
@@ -51,8 +50,6 @@ void addToLog(Aircraft airplane, int x, int y, int z) {
 
 	int id = airplane.getId();
 	int counter = 0;
-
-	bool isObjectlost = detectLostObjects(id);
 
 	// if in those coordinates, then airplane in the airspace
 	if ((x <= 100000 & x >= 0) && (y <= 100000 & y >= 0) && (z >= 0 & z <= 25000)) {
@@ -67,7 +64,7 @@ void addToLog(Aircraft airplane, int x, int y, int z) {
 			int y_hit = airplane.getY_coord();
 			int z_hit = airplane.getZ_coord();
 			
-			if ((isObjectlost) && (x_hit != x) && (y_hit != y) && (z_hit != z)) { // means that lost object, still add into hit list because id can be the same
+			if ((id < 0) && (x_hit != x) && (y_hit != y) && (z_hit != z)) { // means that lost object, still add into hit list because id can be the same
 				Hit.push_back(airplane);
 				break;
 			}
@@ -154,7 +151,7 @@ void displayAirspace(vector<Aircraft> hitList) {
 		int y = hitList[i].getY_coord();
 		int z = hitList[i].getZ_coord();
 
-		cout << "aircraft --> " << id << ", (" << x << "," << y << "," << z << ")" << endl;;
+		cout << "aircraft --> " << id << ", (" << x << "," << y << "," << z << ")" << endl;
 
 		int speedValue = pow(x, 2) + pow(y, 2) + pow(z, 2);
 
@@ -182,6 +179,7 @@ void trackerFile(Aircraft airplane) {
 
 	addToLog(airplane, x, y, z);
 	deleteFromLog(airplane, x, y, z);
+	aircraftMovement(airplane);
 	collisionAvoidance();
 }
 
@@ -191,22 +189,35 @@ void scheduler() {
 
 }
 
-void timer_start(std::function<void(void)> func, unsigned int interval)
+// create thread for tracker file (radar) 
+void start_timer_tracker(function<void(Aircraft)> func, Aircraft airplane, unsigned int interval)
 {
-	std::thread([func, interval]() {
+	thread([func, airplane, interval]() {
 		while (true)
 		{
-			func();
-			std::this_thread::sleep_for(std::chrono::seconds(interval));
+			func(airplane);
+			this_thread::sleep_for(chrono::seconds(interval));
+		}
+	}).detach();
+}
+
+// Create thread for the display function
+void start_timer_display(function<void(vector<Aircraft>)> func, vector<Aircraft> hit, unsigned int interval)
+{
+	thread([func, hit, interval]() {
+		while (true)
+		{
+			func(hit);
+			this_thread::sleep_for(chrono::seconds(interval));
 		}
 	}).detach();
 }
 
 
-void do_something() // only to test the clock
+/*void do_something() // only to test the clock
 {
 	std::cout << "I am doing something" << std::endl;
-}
+}*/
 
 
 int main() {
@@ -215,9 +226,7 @@ int main() {
 	auto timenow = chrono::system_clock::to_time_t(chrono::system_clock::now());
 	cout << "The local date and time is: " << ctime(&timenow) << endl;
 
-	timer_start(do_something, 1);
-
-	while (true);
+	//timer_start(do_something, 1);
 
 	int airplane_schedule[160] = { // each line represents an aircraft (ID, speed_x, speed_y, speed_z, x, y, z, entry time)
 
@@ -263,6 +272,17 @@ int main() {
 	Aircraft a18(17, -138, 455, 602, 23000, 102290, 14000, 199);
 	Aircraft a19(18, -150, 557, -356, 38000, 100000, 1000, 204);
 	Aircraft a20(19, 194, 184, 598, 35000, 0, 2000, 221);
+	
+
+	Aircraft aTest1(2018, 200, 150, 100, 0, 0, 0, 2);
+	Aircraft aTest2(2222, 100, 200, 400, 500, 250, 0, 4);
+
+	start_timer_tracker(trackerFile, aTest1, 1);
+	start_timer_tracker(trackerFile, aTest2, 1);
+
+	start_timer_display(displayAirspace, Hit, 5);
+
+	while (true);
 
 	return 0;
 }
