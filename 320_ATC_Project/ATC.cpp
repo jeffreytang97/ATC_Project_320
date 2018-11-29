@@ -18,15 +18,41 @@ using namespace std;
 vector<Aircraft> Hit; 
 
 // ATC data and functions handling
-// scan airspace every 15 seconds
 
-// maintain database (trackfile) log
+// Communications
+void communicationsHandler(int aircraftID, string msg) { // messages in queues
+
+
+
+}
+
+void send(int aircraftID, string msg) {
+
+	cout << "To the aircraft with ID: " + aircraftID << endl;
+	cout << "Please " + msg << endl;
+
+}
+
+void broadcast(string msg) {
+	cout << endl << "To all airplanes, " + msg << endl;
+}
+
+bool detectLostObjects(int aircraftID) {
+	if (aircraftID < 0) {
+		string msg = "Identify yourselves";
+		broadcast(msg);
+		return true;
+	}
+	return false;
+}
 
 // add into Hit list when aircraft in airspace
 void addToLog(Aircraft airplane, int x, int y, int z) {
 
 	int id = airplane.getId();
 	int counter = 0;
+
+	bool isObjectlost = detectLostObjects(id);
 
 	// if in those coordinates, then airplane in the airspace
 	if ((x <= 100000 & x >= 0) && (y <= 100000 & y >= 0) && (z >= 0 & z <= 25000)) {
@@ -36,8 +62,12 @@ void addToLog(Aircraft airplane, int x, int y, int z) {
 			int aircraftListId = Hit[i].getId();
 			
 			// Check if aircraft already inserted in the Hit list
+
+			int x_hit = airplane.getX_coord();
+			int y_hit = airplane.getY_coord();
+			int z_hit = airplane.getZ_coord();
 			
-			if (id < 0) { // means that lost object, still add into hit list because id can be the same
+			if ((isObjectlost) && (x_hit != x) && (y_hit != y) && (z_hit != z)) { // means that lost object, still add into hit list because id can be the same
 				Hit.push_back(airplane);
 				break;
 			}
@@ -82,20 +112,6 @@ void deleteFromLog(Aircraft airplane, int x, int y, int z) {
 
 void collisionAvoidance() {
 
-}
-
-// executes every 15 seconds to scan airplanes from the airfield
-void trackerFile(Aircraft airplane) {
-
-	// airspace dimensions are 100 x 100 miles (x,y) --> coordinates starts at origin from a corner, therefore 0 to 100000 in x and y
-	// height is 25000 ft --> from 0 to 25000 feet
-	int x = airplane.getX_coord();
-	int y = airplane.getY_coord();
-	int z = airplane.getZ_coord();
-
-	addToLog(airplane, x, y, z);
-	deleteFromLog(airplane, x, y, z);
-	collisionAvoidance();
 }
 
 void aircraftMovement(Aircraft airplane) {
@@ -147,35 +163,26 @@ void displayAirspace(vector<Aircraft> hitList) {
 	}
 }
 
-
-// Communications
-void communicationsHandler(int aircraftID, string msg) { // messages in queues
-
-	
-
-}
-
-void send(int aircraftID, string msg) {
-
-	cout << "To the aircraft with ID: " + aircraftID << endl;
-	cout << "Please " + msg << endl;
-
-}
-
-void broadcast(string msg) {
-	cout << "To all airplanes, " + msg << endl;
-}
-
-void detectLostObjects(int aircraftID) {
-	if (aircraftID < 0) {
-		string msg = "Identify yourselves";
-		broadcast(msg);
-	}
-}
-
 // detect or handle any failures including missed deadlines and failure of an aircraft to respond to an operator command
 void failures() {
 
+}
+
+// scan airspace every 15 seconds
+// maintain database (trackfile) log
+// executes every 15 seconds to scan airplanes from the airfield
+
+void trackerFile(Aircraft airplane) {
+
+	// airspace dimensions are 100 x 100 miles (x,y) --> coordinates starts at origin from a corner, therefore 0 to 100000 in x and y
+	// height is 25000 ft --> from 0 to 25000 feet
+	int x = airplane.getX_coord();
+	int y = airplane.getY_coord();
+	int z = airplane.getZ_coord();
+
+	addToLog(airplane, x, y, z);
+	deleteFromLog(airplane, x, y, z);
+	collisionAvoidance();
 }
 
 // will handle the sporadic and periodic jobs/processes
