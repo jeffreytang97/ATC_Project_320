@@ -25,11 +25,11 @@ public:
 		entry_time = entryTime;
 	}
 
-	int getId() {
+	int getId() const {
 		return aircraft_id;
 	}
 
-	int getEntryTime() {
+	int getEntryTime() const {
 		return entry_time;
 	}
 
@@ -45,15 +45,15 @@ public:
 		z_coord = newAltitude;
 	}
 
-	int getX_coord() {
+	int getX_coord() const {
 		return x_coord;
 	}
 
-	int getY_coord() {
+	int getY_coord() const {
 		return y_coord;
 	}
 
-	int getZ_coord() {
+	int getZ_coord() const {
 		return z_coord;
 	}
 
@@ -79,15 +79,15 @@ public:
 	
 	}*/
 
-	int getXSpeed() {
+	int getXSpeed() const {
 		return x_speed;
 	}
 
-	int getYSpeed() {
+	int getYSpeed() const {
 		return y_speed;
 	}
 
-	int getZSpeed() {
+	int getZSpeed() const {
 		return z_speed;
 	}
 

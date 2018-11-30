@@ -46,7 +46,7 @@ void detectLostObjects(int aircraftID) {
 }
 
 // add into Hit list when aircraft in airspace
-void addToLog(Aircraft airplane, int x, int y, int z) {
+void addToLog(Aircraft& airplane, int x, int y, int z) {
 
 	int id = airplane.getId();
 	int counter = 0;
@@ -85,7 +85,7 @@ void addToLog(Aircraft airplane, int x, int y, int z) {
 
 
 // when aircraft leaves airspace
-void deleteFromLog(Aircraft airplane, int x, int y, int z) {
+void deleteFromLog(Aircraft& airplane, int x, int y, int z) {
 
 	int id = airplane.getId();
 
@@ -107,27 +107,42 @@ void deleteFromLog(Aircraft airplane, int x, int y, int z) {
 	}
 }
 
+void updateLog(Aircraft& airplane) {
+
+	for (int i = 0; i < Hit.size(); i++)
+	{
+		int aircraftListId = Hit[i].getId();
+		int id = airplane.getId();
+
+		if (aircraftListId == id) {
+			Hit[i].setX_coord(airplane.getX_coord());
+			Hit[i].setY_coord(airplane.getY_coord());
+			Hit[i].setZ_coord(airplane.getZ_coord());
+		}
+	}
+}
+
 void collisionAvoidance() {
 
 }
 
-void aircraftMovement(Aircraft airplane) {
-
-	int x = airplane.getX_coord();
-	int y = airplane.getY_coord();
-	int z = airplane.getZ_coord();
+void aircraftMovement(Aircraft& airplane) { // pass by reference in order to update and save the new position values
 
 	int current_speed_x = airplane.getXSpeed();
 	int current_speed_y = airplane.getYSpeed();
 	int current_speed_z = airplane.getZSpeed();
 
-	// The position of the aircraft will be updated every second
-	x += current_speed_x;
-	y += current_speed_y;
-	z += current_speed_z;
+	int current_pos_x = airplane.getX_coord();
+	int current_pos_y = airplane.getY_coord();
+	int current_pos_z = airplane.getZ_coord();
 
+	// The position of the aircraft will be updated every second
 	// New coordinates after each seconds
-	airplane.positionChange(x, y, z);
+	airplane.setX_coord(current_pos_x + current_speed_x);
+	airplane.setY_coord(current_pos_y + current_speed_y);
+	airplane.setZ_coord(current_pos_z + current_speed_z);
+
+	updateLog(airplane);
 }
 
 // store full hit list in history log every 60 seconds
@@ -145,22 +160,33 @@ void historyLog(vector<Aircraft> hitList, ostream &file) {
 
 // display all aircraft from the airspace
 // every 5 seconds to see the changes in the airspace
-void displayAirspace(vector<Aircraft> hitList) { 
+void displayAirspace() { 
 
-	for (int i = 0; i < hitList.size(); i++)
+	cout << endl;
+	for (int i = 0; i < Hit.size(); i++)
 	{
-		int id = hitList[i].getId(); 
-		int x = hitList[i].getX_coord();
-		int y = hitList[i].getY_coord();
-		int z = hitList[i].getZ_coord();
+		int id = Hit[i].getId(); 
+		int x = Hit[i].getX_coord();
+		int y = Hit[i].getY_coord();
+		int z = Hit[i].getZ_coord();
 
-		cout << "aircraft --> " << id << ", (" << x << "," << y << "," << z << ")" << endl;
+		int x_speed = Hit[i].getXSpeed();
+		int y_speed = Hit[i].getYSpeed();
+		int z_speed = Hit[i].getZSpeed();
 
-		int speedValue = pow(x, 2) + pow(y, 2) + pow(z, 2);
+		if ((x > 100000 | x < 0) || (y > 100000 | y < 0) || (z > 25000 | z < 0)) { 
+			// don't display if out of airspace... do nothing
+		}
+		else {
+			cout << "aircraft --> " << id << ", (" << x << "," << y << "," << z << "), ";
 
-		cout << endl << "Aircraft " << id << " current speed: " << pow(speedValue, 0.5) << endl;
-		cout << endl;
+			float speedValue = pow(x_speed, 2) + pow(y_speed, 2) + pow(z_speed, 2);
+
+			cout << "current speed: " << pow(speedValue, 0.5) << endl;
+			cout << endl;
+		}
 	}
+	cout << "--------------------------------------------------" << endl;
 }
 
 // detect or handle any failures including missed deadlines and failure of an aircraft to respond to an operator command
@@ -172,30 +198,50 @@ void failures() {
 // maintain database (trackfile) log
 // executes every 15 seconds to scan airplanes from the airfield
 
-void trackerFile(Aircraft airplane) {
+void trackerFile(vector<Aircraft>& listOfAircraft) {
 
-	// airspace dimensions are 100 x 100 miles (x,y) --> coordinates starts at origin from a corner, therefore 0 to 100000 in x and y
-	// height is 25000 ft --> from 0 to 25000 feet
-	int x = airplane.getX_coord();
-	int y = airplane.getY_coord();
-	int z = airplane.getZ_coord();
+	for (int i = 0; i < listOfAircraft.size(); i++)
+	{
+		// airspace dimensions are 100 x 100 miles (x,y) --> coordinates starts at origin from a corner, therefore 0 to 100000 in x and y
+		// height is 25000 ft --> from 0 to 25000 feet
+		int x = listOfAircraft[i].getX_coord();
+		int y = listOfAircraft[i].getY_coord();
+		int z = listOfAircraft[i].getZ_coord();
 
-	addToLog(airplane, x, y, z);
-	deleteFromLog(airplane, x, y, z);
-	aircraftMovement(airplane);
-	collisionAvoidance();
-}
-
-// will handle the sporadic and periodic jobs/processes
-// Every operator sporadic inputs must be completed within 2 seconds
-void scheduler() {
-
+		addToLog(listOfAircraft[i], x, y, z);
+		deleteFromLog(listOfAircraft[i], x, y, z);
+		aircraftMovement(listOfAircraft[i]);
+	}
 }
 
 // create thread for tracker file (radar) 
-void start_timer_tracker(function<void(Aircraft)> func, Aircraft airplane, unsigned int interval)
+void start_timer_tracker(function<void(vector<Aircraft>&)> func, vector<Aircraft>& listOfAircraft , unsigned int interval)
 {
-	thread([func, airplane, interval]() {
+	thread([func, &listOfAircraft, interval]() {
+		while (true)
+		{
+			func(listOfAircraft);
+			this_thread::sleep_for(chrono::seconds(interval));
+		}
+	}).detach();
+}
+
+// Create thread for the display function
+void start_timer_display(function<void(void)> func, unsigned int interval)
+{
+	thread([func, interval]() {
+		while (true)
+		{
+			func();
+			this_thread::sleep_for(chrono::seconds(interval));
+		}
+	}).detach();
+}
+
+// Create thread for the movement function
+void start_timer_movement(function<void(Aircraft&)> func, Aircraft& airplane, unsigned int interval)
+{
+	thread([func, &airplane, interval]() {
 		while (true)
 		{
 			func(airplane);
@@ -204,24 +250,23 @@ void start_timer_tracker(function<void(Aircraft)> func, Aircraft airplane, unsig
 	}).detach();
 }
 
-// Create thread for the display function
-void start_timer_display(function<void(vector<Aircraft>)> func, vector<Aircraft> hit, unsigned int interval)
-{
-	thread([func, hit, interval]() {
-		while (true)
-		{
-			func(hit);
-			this_thread::sleep_for(chrono::seconds(interval));
-		}
-	}).detach();
-}
-
-
 /*void do_something() // only to test the clock
 {
 	std::cout << "I am doing something" << std::endl;
 }*/
 
+
+// will handle the sporadic and periodic jobs/processes
+// Every operator sporadic inputs must be completed within 2 seconds
+
+void scheduler(vector<Aircraft> listOfAircraft) {
+
+	_sleep(1000);
+	start_timer_tracker(trackerFile, listOfAircraft, 2);
+	start_timer_display(displayAirspace, 2);
+	while (true);
+
+}
 
 int main() {
 
@@ -278,21 +323,21 @@ int main() {
 	Aircraft a20(19, 194, 184, 598, 35000, 0, 2000, 221);
 	
 
-	Aircraft aTest1(2018, 200, 150, 100, 0, 0, 0, 2);
+	Aircraft aTest1(2018, 10000, 150, 100, 0, 0, 0, 2);
 	Aircraft aTest2(2222, 100, 200, 400, 500, 250, 0, 4);
-/*
-	start_timer_tracker(trackerFile, aTest1, 1);
-	start_timer_tracker(trackerFile, aTest2, 1);
+	Aircraft aTest3(3333, 1000, 0, 1, 0, 0, 0, 4);
 
-	start_timer_display(displayAirspace, Hit, 5);
+	vector<Aircraft> listOfAircraft;
+	listOfAircraft.push_back(a20);
+	listOfAircraft.push_back(a13);
+	listOfAircraft.push_back(a7);
 
-	while (true);
-*/
+	scheduler(listOfAircraft);
 
-	addToLog(aTest1, 641, 283, 500);
-	addToLog(aTest2, 223, 630, 526);
+	//addToLog(aTest1, 641, 283, 500);
+	//addToLog(aTest2, 223, 630, 526);
 
-	displayAirspace(Hit);
+	//displayAirspace();
 
 	system("pause");
 
