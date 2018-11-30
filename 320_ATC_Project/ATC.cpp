@@ -214,12 +214,6 @@ void trackerFile(vector<Aircraft>& listOfAircraft) {
 	}
 }
 
-// will handle the sporadic and periodic jobs/processes
-// Every operator sporadic inputs must be completed within 2 seconds
-void scheduler() {
-
-}
-
 // create thread for tracker file (radar) 
 void start_timer_tracker(function<void(vector<Aircraft>&)> func, vector<Aircraft>& listOfAircraft , unsigned int interval)
 {
@@ -261,6 +255,18 @@ void start_timer_movement(function<void(Aircraft&)> func, Aircraft& airplane, un
 	std::cout << "I am doing something" << std::endl;
 }*/
 
+
+// will handle the sporadic and periodic jobs/processes
+// Every operator sporadic inputs must be completed within 2 seconds
+
+void scheduler(vector<Aircraft> listOfAircraft) {
+
+	_sleep(1000);
+	start_timer_tracker(trackerFile, listOfAircraft, 2);
+	start_timer_display(displayAirspace, 2);
+	while (true);
+
+}
 
 int main() {
 
@@ -326,17 +332,7 @@ int main() {
 	listOfAircraft.push_back(a13);
 	listOfAircraft.push_back(a7);
 
-	_sleep(1000);
-	start_timer_tracker(trackerFile, listOfAircraft, 4);
-	
-	//start_timer_movement(aircraftMovement, aTest2, 2);
-
-	start_timer_display(displayAirspace, 4);
-
-	
-	//start_timer_tracker(trackerFile, aTest2, 15);
-
-	while (true);
+	scheduler(listOfAircraft);
 
 	//addToLog(aTest1, 641, 283, 500);
 	//addToLog(aTest2, 223, 630, 526);
