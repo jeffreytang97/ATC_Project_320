@@ -146,16 +146,19 @@ void aircraftMovement(Aircraft& airplane) { // pass by reference in order to upd
 }
 
 // store full hit list in history log every 60 seconds
-void historyLog(vector<Aircraft> hitList, ostream &file) {
+void historyLog(vector<Aircraft>& hitList, ostream &file) {
 
-	
+	// current date/time based on current system 
+	auto timenow = chrono::system_clock::to_time_t(chrono::system_clock::now());
+	cout << "History logged at: " << ctime(&timenow) << endl;
+
 	for (int i = 0; i < hitList.size(); i++)
 	{
 		file << "ID: " << hitList[i].getId() << " " << "X position: " << hitList[i].getX_coord() << " " << "Y position: " << hitList[i].getY_coord()
 			<< " " << "Z position: " << hitList[i].getZ_coord() << " " << "Entry time: " << hitList[i].getEntryTime() << " " << "X velocity: " << hitList[i].getXSpeed()
 			<< " " << "Y Velocity: " << hitList[i].getYSpeed() << " " << "Z Velocity: " << hitList[i].getZSpeed() << endl;
 	}
-	
+	cout << endl << endl;
 }
 
 // display all aircraft from the airspace
@@ -174,6 +177,8 @@ void displayAirspace() {
 		int y_speed = Hit[i].getYSpeed();
 		int z_speed = Hit[i].getZSpeed();
 
+		int entryTime = Hit[i].getEntryTime();
+
 		if ((x > 100000 | x < 0) || (y > 100000 | y < 0) || (z > 25000 | z < 0)) { 
 			// don't display if out of airspace... do nothing
 		}
@@ -182,11 +187,11 @@ void displayAirspace() {
 
 			float speedValue = pow(x_speed, 2) + pow(y_speed, 2) + pow(z_speed, 2);
 
-			cout << "current speed: " << pow(speedValue, 0.5) << endl;
-			cout << endl;
+			cout << "current speed: " << pow(speedValue, 0.5) << ", entry time: " << entryTime << "s.";
+			cout << endl << endl;
 		}
 	}
-	cout << "--------------------------------------------------" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 }
 
 // detect or handle any failures including missed deadlines and failure of an aircraft to respond to an operator command
@@ -214,6 +219,8 @@ void trackerFile(vector<Aircraft>& listOfAircraft) {
 	}
 }
 
+// Multithreading of timers
+
 // create thread for tracker file (radar) 
 void start_timer_tracker(function<void(vector<Aircraft>&)> func, vector<Aircraft>& listOfAircraft , unsigned int interval)
 {
@@ -238,47 +245,73 @@ void start_timer_display(function<void(void)> func, unsigned int interval)
 	}).detach();
 }
 
-// Create thread for the movement function
-void start_timer_movement(function<void(Aircraft&)> func, Aircraft& airplane, unsigned int interval)
+// Create thread for the clock / release time configuration
+void start_timer_clock(function<void(vector<Aircraft>&, vector<Aircraft>& , int&)> func, vector<Aircraft>& airplane_list, vector<Aircraft>& listOfAircraft, int &counter, unsigned int interval)
 {
-	thread([func, &airplane, interval]() {
+	thread([func, &airplane_list, &listOfAircraft,&counter, interval]() {
 		while (true)
 		{
-			func(airplane);
+			func(airplane_list, listOfAircraft, counter);
 			this_thread::sleep_for(chrono::seconds(interval));
 		}
 	}).detach();
 }
 
-/*void do_something() // only to test the clock
-{
-	std::cout << "I am doing something" << std::endl;
-}*/
+//Create thread for history log file
+// Create new thread to not conflict with other processes
+void start_timer_history(function<void(vector<Aircraft>&, ofstream&)> func, vector<Aircraft>& Hitlist, ofstream& file, unsigned int interval) {
+
+	thread([func, &Hitlist, &file, interval]() {
+		while (true)
+		{
+			func(Hitlist, file);
+			this_thread::sleep_for(chrono::seconds(interval));
+		}
+	}).detach();
+}
+
+void entryTime_counter(vector<Aircraft>& airplane_list, vector<Aircraft>& listOfAircraftAdded, int& counter) {
+	
+	counter++;
+
+	// compare the counter to the release time of the aircraft
+	// If the counter is equal to the release time, then add to the list of aircraft 
+
+	for (int i = 0; i < airplane_list.size(); i++)
+	{
+		Aircraft airplane = airplane_list[i];
+		int entryTime = airplane.getEntryTime();
+
+		if (entryTime == counter) {
+			listOfAircraftAdded.push_back(airplane);
+		}
+	}
+}
 
 
 // will handle the sporadic and periodic jobs/processes
 // Every operator sporadic inputs must be completed within 2 seconds
 
-void scheduler(vector<Aircraft> listOfAircraft) {
+void scheduler(vector<Aircraft>& listOfAircraft) {
 
-	_sleep(1000);
-	start_timer_tracker(trackerFile, listOfAircraft, 2);
-	start_timer_display(displayAirspace, 2);
+	start_timer_tracker(trackerFile, listOfAircraft, 1);
+	start_timer_display(displayAirspace, 5);
 	while (true);
 
 }
 
 int main() {
 
-	// current date/time based on current system (testing only)
+	vector<Aircraft> listOfAircraftAdded;
+	int counter = 0;
+
+	// current date/time based on current system 
 	auto timenow = chrono::system_clock::to_time_t(chrono::system_clock::now());
 	cout << "The local date and time is: " << ctime(&timenow) << endl;
 
-	//timer_start(do_something, 1);
-
-
-	int airplane_schedule[160] = { // each line represents an aircraft (ID, speed_x, speed_y, speed_z, x, y, z, entry time)
-
+	// each line represents an aircraft (ID, speed_x, speed_y, speed_z, x, y, z, entry time)
+	int airplane_schedule[160] = 
+	{ 
 		0, -641, 283, 500, 95000, 101589, 10000, 13, // a1
 		1, -223, -630, -526, 71000, 100000, 13000, 16, // a2
 		-1, -180, -446, -186, 41000, 100000, 6000, 31, // a3
@@ -323,31 +356,26 @@ int main() {
 	Aircraft a20(19, 194, 184, 598, 35000, 0, 2000, 221);
 	
 
-	Aircraft aTest1(2018, 10000, 150, 100, 0, 0, 0, 2);
-	Aircraft aTest2(2222, 100, 200, 400, 500, 250, 0, 4);
-	Aircraft aTest3(3333, 1000, 0, 1, 0, 0, 0, 4);
+	/*Aircraft aTest1(2018, 10000, 150, 100, 0, 0, 0, 2);
+	Aircraft aTest2(2222, 100, 200, 400, 500, 250, 0, 4);                                                                 
+	Aircraft aTest3(3333, 1000, 0, 1, 0, 0, 0, 6);*/
 
-	vector<Aircraft> listOfAircraft;
-	listOfAircraft.push_back(a20);
-	listOfAircraft.push_back(a13);
-	listOfAircraft.push_back(a7);
+	//vector<Aircraft> airplane_list = {aTest1, aTest2, aTest3, a2};
+	vector<Aircraft> airplane_list = {a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20};
 
-	scheduler(listOfAircraft);
+	start_timer_clock(entryTime_counter, airplane_list, listOfAircraftAdded, counter, 1);
 
-	//addToLog(aTest1, 641, 283, 500);
-	//addToLog(aTest2, 223, 630, 526);
+	scheduler(listOfAircraftAdded);
 
-	//displayAirspace();
 
 	system("pause");
 
 	ofstream file;
 	file.open("historyLog.txt");
 
-	historyLog(Hit, file);
+	start_timer_history(historyLog, Hit, file, 60);
 
 	file.close();
-
 
 	return 0;
 }
