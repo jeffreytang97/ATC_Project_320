@@ -162,19 +162,27 @@ void aircraftMovement(Aircraft& airplane) { // pass by reference in order to upd
 }
 
 // store full hit list in history log every 60 seconds
-void historyLog(vector<Aircraft>& hitList, ostream &file) {
+void historyLog(ostream &file) {
 
 	// current date/time based on current system 
 	auto timenow = chrono::system_clock::to_time_t(chrono::system_clock::now());
-	cout << "History logged at: " << ctime(&timenow) << endl;
+	cout << "History log updated at: " << ctime(&timenow) << endl;
 
-	for (int i = 0; i < hitList.size(); i++)
+	file << "Airspace status at: " << ctime(&timenow) << endl;
+	if (Hit.empty()) 
 	{
-		file << "ID: " << hitList[i].getId() << " " << "X position: " << hitList[i].getX_coord() << " " << "Y position: " << hitList[i].getY_coord()
-			<< " " << "Z position: " << hitList[i].getZ_coord() << " " << "Entry time: " << hitList[i].getEntryTime() << " " << "X velocity: " << hitList[i].getXSpeed()
-			<< " " << "Y Velocity: " << hitList[i].getYSpeed() << " " << "Z Velocity: " << hitList[i].getZSpeed() << endl;
+		file << "     **The airspace is currently empty at this time**" << endl;
 	}
-	cout << endl << endl;
+	else 
+	{
+		for (int i = 0; i < Hit.size(); i++)
+		{
+			file << "     ID: " << Hit[i].getId() << " " << "X position: " << Hit[i].getX_coord() << " / " << "Y position: " << Hit[i].getY_coord()
+				<< " / " << "Z position: " << Hit[i].getZ_coord() << " / " << "Entry time: " << Hit[i].getEntryTime() << " / " << "X velocity: " << Hit[i].getXSpeed()
+				<< " / " << "Y Velocity: " << Hit[i].getYSpeed() << " / " << "Z Velocity: " << Hit[i].getZSpeed() << endl;
+		}
+	}
+	file << endl << "---------------------------------------------------------------------------------" << endl;
 }
 
 // display all aircraft from the airspace
@@ -207,7 +215,7 @@ void displayAirspace() {
 			cout << endl << endl;
 		}
 	}
-	cout << "---------------------------------------------------------------" << endl;
+	cout << "--------------------------------------------------------------------------------------------" << endl;
 }
 
 // detect or handle any failures including missed deadlines and failure of an aircraft to respond to an operator command
@@ -275,12 +283,12 @@ void start_timer_clock(function<void(vector<Aircraft>&, vector<Aircraft>& , int&
 
 //Create thread for history log file
 // Create new thread to not conflict with other processes
-void start_timer_history(function<void(vector<Aircraft>&, ofstream&)> func, vector<Aircraft>& Hitlist, ofstream& file, unsigned int interval) {
+void start_timer_history(function<void(ofstream&)> func, ofstream& file, unsigned int interval) {
 
-	thread([func, &Hitlist, &file, interval]() {
+	thread([func, &file, interval]() {
 		while (true)
 		{
-			func(Hitlist, file);
+			func(file);
 			this_thread::sleep_for(chrono::seconds(interval));
 		}
 	}).detach();
@@ -312,14 +320,14 @@ void scheduler(vector<Aircraft>& listOfAircraft) {
 
 	start_timer_tracker(trackerFile, listOfAircraft, 1);
 	start_timer_display(displayAirspace, 5);
-	while (true);
-
 }
 
 int main() {
 
 	vector<Aircraft> listOfAircraftAdded;
 	int counter = 0;
+	ofstream file;
+	file.open("historyLog.txt");
 
 	// current date/time based on current system 
 	auto timenow = chrono::system_clock::to_time_t(chrono::system_clock::now());
@@ -371,25 +379,13 @@ int main() {
 	Aircraft a19(18, -150, 557, -356, 38000, 100000, 1000, 204);
 	Aircraft a20(19, 194, 184, 598, 35000, 0, 2000, 221);
 	
-
-	/*Aircraft aTest1(2018, 10000, 150, 100, 0, 0, 0, 2);
-	Aircraft aTest2(2222, 100, 200, 400, 500, 250, 0, 4);                                                                 
-	Aircraft aTest3(3333, 1000, 0, 1, 0, 0, 0, 6);*/
-
-	//vector<Aircraft> airplane_list = {aTest1, aTest2, aTest3, a2};
 	vector<Aircraft> airplane_list = {a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20};
 
 	start_timer_clock(entryTime_counter, airplane_list, listOfAircraftAdded, counter, 1);
-
+	start_timer_history(historyLog, file, 10);
 	scheduler(listOfAircraftAdded);
 
-
-	system("pause");
-
-	ofstream file;
-	file.open("historyLog.txt"); 
-
-	start_timer_history(historyLog, Hit, file, 60);
+	while (true);
 
 	file.close();
 
