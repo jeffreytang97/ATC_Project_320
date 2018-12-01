@@ -20,9 +20,24 @@ vector<Aircraft> Hit;
 // ATC data and functions handling
 
 // Communications
-void communicationsHandler(int aircraftID, string msg) { // messages in queues
+void communicationsHandler(Aircraft aircraftID, int aNumber, bool sign) { // messages in queues
 
+	int result;
+	int finalResult;
 
+	if (sign = true) {
+		result = aNumber * 1000;
+		finalResult = aircraftID.getZ_coord + result;
+
+		aircraftID.setZSpeed(finalResult);
+	}
+	else
+	{
+		result = aNumber * 1000;
+		finalResult = aircraftID.getZ_coord - result;
+
+		aircraftID.setZSpeed(finalResult);
+	}
 
 }
 
@@ -342,7 +357,7 @@ int main() {
 	system("pause");
 
 	ofstream file;
-	file.open("historyLog.txt");
+	file.open("historyLog.txt"); 
 
 	historyLog(Hit, file);
 
