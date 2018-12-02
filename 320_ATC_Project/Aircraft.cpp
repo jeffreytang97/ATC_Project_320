@@ -45,15 +45,15 @@ public:
 		z_coord = newAltitude;
 	}
 
-	int getX_coord() const {
+	int getX_coord() {
 		return x_coord;
 	}
 
-	int getY_coord() const {
+	int getY_coord() {
 		return y_coord;
 	}
 
-	int getZ_coord() const {
+	int getZ_coord() {
 		return z_coord;
 	}
 
@@ -79,15 +79,15 @@ public:
 	
 	}*/
 
-	int getXSpeed() const {
+	int getXSpeed() {
 		return x_speed;
 	}
 
-	int getYSpeed() const {
+	int getYSpeed() {
 		return y_speed;
 	}
 
-	int getZSpeed() const {
+	int getZSpeed() {
 		return z_speed;
 	}
 
