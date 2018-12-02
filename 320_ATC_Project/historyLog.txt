@@ -1,41 +1,5 @@
-Airspace status at: Sat Dec  1 18:41:39 2018
+Airspace status at: Sun Dec  2 02:39:52 2018
 
      **The airspace is currently empty at this time**
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 18:41:49 2018
-
-     **The airspace is currently empty at this time**
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 18:41:59 2018
-
-     ID: 1 X position: 69885 / Y position: 96850 / Z position: 10370 / Entry time: 16 / X velocity: -223 / Y Velocity: -630 / Z Velocity: -526
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 18:42:09 2018
-
-     ID: 1 X position: 67655 / Y position: 90550 / Z position: 5110 / Entry time: 16 / X velocity: -223 / Y Velocity: -630 / Z Velocity: -526
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 18:42:19 2018
-
-     ID: 1 X position: 65425 / Y position: 84250 / Z position: -150 / Entry time: 16 / X velocity: -223 / Y Velocity: -630 / Z Velocity: -526
-     ID: -1 X position: 39200 / Y position: 95540 / Z position: 4140 / Entry time: 31 / X velocity: -180 / Y Velocity: -446 / Z Velocity: -186
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 18:42:29 2018
-
-     **The airspace is currently empty at this time**
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 18:42:39 2018
-
-     **The airspace is currently empty at this time**
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 18:42:49 2018
-
-     ID: -1 X position: 82344 / Y position: 97628 / Z position: 9996 / Entry time: 67 / X velocity: -164 / Y Velocity: -593 / Z Velocity: -501
 
 ---------------------------------------------------------------------------------
