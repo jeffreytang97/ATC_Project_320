@@ -282,27 +282,59 @@ void collisionAvoidance() {
 
 	for (int i = 0; i < size-1; i++)
 	{
-		int x_a1 = Hit[i].getX_coord();
-		int y_a1 = Hit[i].getY_coord();    
-		int z_a1 = Hit[i].getZ_coord();
+		int x_a1 = listOfAircraftAdded[i].getX_coord();
+		int y_a1 = listOfAircraftAdded[i].getY_coord();
+		int z_a1 = listOfAircraftAdded[i].getZ_coord();
+
+		int x_a1Hit = Hit[i].getX_coord();
+		int y_a1Hit = Hit[i].getY_coord();
+		int z_a1Hit = Hit[i].getZ_coord();
 
 		for (int j = size-1; j > i; j--)
 		{
-			int x_a2 = Hit[j].getX_coord();
-			int y_a2 = Hit[j].getY_coord();
-			int z_a2 = Hit[j].getZ_coord();
+			int x_a2 = listOfAircraftAdded[j].getX_coord();
+			int y_a2 = listOfAircraftAdded[j].getY_coord();
+			int z_a2 = listOfAircraftAdded[j].getZ_coord();
+
+			int x_a2Hit = Hit[j].getX_coord();
+			int y_a2Hit = Hit[j].getY_coord();
+			int z_a2Hit = Hit[j].getZ_coord();
 
 			int x_difference = abs(x_a1 - x_a2); // absolute value of the difference between both aircraft distance
 			int y_difference = abs(y_a1 - y_a2);
 			int z_difference = abs(z_a1 - z_a2);
 
+			int x_differenceHit = abs(x_a1Hit - x_a2Hit); // absolute value of the difference between both aircraft distance
+			int y_differenceHit = abs(y_a1Hit - y_a2Hit);
+			int z_differenceHit = abs(z_a1Hit - z_a2Hit);
+
 			if ((z_difference <= 1000) && (x_difference <= 3) && (y_difference <= 3)) 
 			{	
-				int speed_x = Hit[j].getXSpeed();
-				int speed_y = Hit[j].getYSpeed();
+				int speed_x = listOfAircraftAdded[j].getXSpeed();
+				int speed_y = listOfAircraftAdded[j].getYSpeed();
 				
 				collision = true;
 				
+
+				// Make the plane go to the opposite direction to avoid collision
+
+				if (speed_x != 0) {
+					listOfAircraftAdded[j].setXSpeed((speed_x)*-1);
+					updateLog(listOfAircraftAdded[j]);
+				}
+				else {
+					listOfAircraftAdded[j].setYSpeed((speed_y)*-1);
+					updateLog(listOfAircraftAdded[j]);
+				}
+			}
+
+			if ((z_differenceHit <= 1000) && (x_differenceHit <= 3) && (y_differenceHit <= 3))
+			{
+				int speed_x = Hit[j].getXSpeed();
+				int speed_y = Hit[j].getYSpeed();
+
+				collision = true;
+
 
 				// Make the plane go to the opposite direction to avoid collision
 
@@ -311,7 +343,7 @@ void collisionAvoidance() {
 					updateLog(Hit[j]);
 				}
 				else {
-					Hit[j].setYSpeed((speed_y)*-1);
+					listOfAircraftAdded[j].setYSpeed((speed_y)*-1);
 					updateLog(Hit[j]);
 				}
 			}
@@ -563,14 +595,14 @@ int main() {
 	Aircraft a19(18, -150, 557, -356, 38000, 100000, 1000, 204);
 	Aircraft a20(19, 194, 184, 598, 35000, 0, 2000, 221);
 	
-	vector<Aircraft> airplane_list = {a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20};
+	//vector<Aircraft> airplane_list = {a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20};
 
 
-	//Aircraft at1(17, -1, -1, 40, 40000, 40000, 14000, 5);
-	//Aircraft at2(18, -1, -1, 40, 40000, 40000, 14000, 6);
-	//Aircraft at3(19, 194, 184, 598, 35000, 0, 2000, 8);
+	Aircraft at1(17, -1, -1, 40, 40000, 40000, 14000, 5);
+	Aircraft at2(18, -1, -1, 40, 40000, 40000, 14000, 6);
+	Aircraft at3(19, 194, 184, 598, 35000, 0, 2000, 8);
 
-	//vector<Aircraft> airplane_list = { at1, at2 };
+	vector<Aircraft> airplane_list = { at1, at2 };
 
 	scheduler(airplane_list, counter, file); 
 	while (true);
