@@ -1,105 +1,103 @@
-Airspace status at: Sat Dec  1 17:51:01 2018
+Airspace status at: Thu Dec  6 17:59:25 2018
 
      **The airspace is currently empty at this time**
 
 ---------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:51:11 2018
+Airspace status at: Thu Dec  6 17:59:45 2018
+
+     ID: 1 --> X position: 70554 / Y position: 98740 / Z position: 11948 / Entry time: 16 / X velocity: -223 / Y Velocity: -630 / Z Velocity: -526
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:00:05 2018
+
+     ID: 1 --> X position: 68324 / Y position: 92440 / Z position: 6688 / Entry time: 16 / X velocity: -223 / Y Velocity: -630 / Z Velocity: -526
+     ID: -1 --> X position: 40280 / Y position: 98216 / Z position: 5256 / Entry time: 31 / X velocity: -180 / Y Velocity: -446 / Z Velocity: -186
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:00:25 2018
+
+     ID: 1 --> X position: 66094 / Y position: 86140 / Z position: 1428 / Entry time: 16 / X velocity: -223 / Y Velocity: -630 / Z Velocity: -526
+     ID: -1 --> X position: 35805 / Y position: 96356 / Z position: 5196 / Entry time: 31 / X velocity: -180 / Y Velocity: -446 / Z Velocity: -186
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:00:45 2018
+
+     ID: -1 --> X position: 27671 / Y position: 93538 / Z position: 3930 / Entry time: 31 / X velocity: -180 / Y Velocity: -446 / Z Velocity: -186
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:01:05 2018
+
+     ID: -1 --> X position: 18881 / Y position: 88348 / Z position: 660 / Entry time: 31 / X velocity: -180 / Y Velocity: -446 / Z Velocity: -186
+     ID: 6 --> X position: 89072 / Y position: 2113 / Z position: 12120 / Entry time: 87 / X velocity: 512 / Y Velocity: 614 / Z Velocity: 520
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:01:25 2018
+
+     ID: 6 --> X position: 94192 / Y position: 8253 / Z position: 17320 / Entry time: 87 / X velocity: 512 / Y Velocity: 614 / Z Velocity: 520
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:01:45 2018
+
+     ID: 6 --> X position: 99312 / Y position: 14393 / Z position: 22520 / Entry time: 87 / X velocity: 512 / Y Velocity: 614 / Z Velocity: 520
+     ID: 9 --> X position: 34185 / Y position: 2870 / Z position: 9695 / Entry time: 129 / X velocity: 437 / Y Velocity: 574 / Z Velocity: 339
+     ID: 10 --> X position: 51704 / Y position: 1614 / Z position: 4576 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:02:05 2018
+
+     ID: 9 --> X position: 38555 / Y position: 8610 / Z position: 13085 / Entry time: 129 / X velocity: 437 / Y Velocity: 574 / Z Velocity: 339
+     ID: 10 --> X position: 57384 / Y position: 6994 / Z position: 6496 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
+     ID: 12 --> X position: 30392 / Y position: 95662 / Z position: 9202 / Entry time: 142 / X velocity: -512 / Y Velocity: -482 / Z Velocity: 578
+     ID: 11 --> X position: 86470 / Y position: 3491 / Z position: 4010 / Entry time: 140 / X velocity: 347 / Y Velocity: 529 / Z Velocity: -599
+     ID: 13 --> X position: 74619 / Y position: -280 / Z position: 10194 / Entry time: 157 / X velocity: 619 / Y Velocity: -280 / Z Velocity: 194
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:02:25 2018
+
+     ID: 9 --> X position: 42925 / Y position: 14350 / Z position: 16475 / Entry time: 129 / X velocity: 437 / Y Velocity: 574 / Z Velocity: 339
+     ID: 10 --> X position: 63064 / Y position: 12374 / Z position: 8416 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
+     ID: 12 --> X position: 25272 / Y position: 90842 / Z position: 14982 / Entry time: 142 / X velocity: -512 / Y Velocity: -482 / Z Velocity: 578
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:02:45 2018
+
+     ID: 9 --> X position: 47295 / Y position: 20090 / Z position: 19865 / Entry time: 129 / X velocity: 437 / Y Velocity: 574 / Z Velocity: 339
+     ID: 10 --> X position: 68744 / Y position: 17754 / Z position: 10336 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
+     ID: 12 --> X position: 20152 / Y position: 86022 / Z position: 20762 / Entry time: 142 / X velocity: -512 / Y Velocity: -482 / Z Velocity: 578
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:03:05 2018
+
+     ID: 9 --> X position: 51665 / Y position: 25830 / Z position: 23255 / Entry time: 129 / X velocity: 437 / Y Velocity: 574 / Z Velocity: 339
+     ID: 10 --> X position: 74424 / Y position: 23134 / Z position: 12256 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:03:25 2018
+
+     ID: 10 --> X position: 80104 / Y position: 28514 / Z position: 14176 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
+     ID: 19 --> X position: 36746 / Y position: 1656 / Z position: 7382 / Entry time: 221 / X velocity: 194 / Y Velocity: 184 / Z Velocity: 598
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:03:45 2018
+
+     ID: 10 --> X position: 85784 / Y position: 33894 / Z position: 16096 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
+     ID: 19 --> X position: 38686 / Y position: 3496 / Z position: 13362 / Entry time: 221 / X velocity: 194 / Y Velocity: 184 / Z Velocity: 598
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:04:05 2018
+
+     ID: 10 --> X position: 91464 / Y position: 39274 / Z position: 18016 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
+     ID: 19 --> X position: 40626 / Y position: 5336 / Z position: 19342 / Entry time: 221 / X velocity: 194 / Y Velocity: 184 / Z Velocity: 598
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:04:25 2018
+
+     ID: 10 --> X position: 97144 / Y position: 44654 / Z position: 19936 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
+     ID: 19 --> X position: 42566 / Y position: 7176 / Z position: 25322 / Entry time: 221 / X velocity: 194 / Y Velocity: 184 / Z Velocity: 598
+
+---------------------------------------------------------------------------------
+Airspace status at: Thu Dec  6 18:04:45 2018
 
      **The airspace is currently empty at this time**
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:51:21 2018
-
-     ID: 1 X position: 69885 / Y position: 96850 / Z position: 10370 / Entry time: 16 / X velocity: -223 / Y Velocity: -630 / Z Velocity: -526
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:51:31 2018
-
-     ID: 1 X position: 67655 / Y position: 90550 / Z position: 5110 / Entry time: 16 / X velocity: -223 / Y Velocity: -630 / Z Velocity: -526
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:51:41 2018
-
-     ID: 1 X position: 65425 / Y position: 84250 / Z position: -150 / Entry time: 16 / X velocity: -223 / Y Velocity: -630 / Z Velocity: -526
-     ID: -1 X position: 39200 / Y position: 95540 / Z position: 4140 / Entry time: 31 / X velocity: -180 / Y Velocity: -446 / Z Velocity: -186
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:51:51 2018
-
-     **The airspace is currently empty at this time**
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:52:01 2018
-
-     **The airspace is currently empty at this time**
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:52:11 2018
-
-     ID: -1 X position: 82344 / Y position: 97628 / Z position: 9996 / Entry time: 67 / X velocity: -164 / Y Velocity: -593 / Z Velocity: -501
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:52:21 2018
-
-     ID: -1 X position: 80704 / Y position: 91698 / Z position: 4986 / Entry time: 67 / X velocity: -164 / Y Velocity: -593 / Z Velocity: -501
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:52:31 2018
-
-     ID: -1 X position: 79064 / Y position: 85768 / Z position: -24 / Entry time: 67 / X velocity: -164 / Y Velocity: -593 / Z Velocity: -501
-     ID: 6 X position: 88048 / Y position: 885 / Z position: 11080 / Entry time: 87 / X velocity: 512 / Y Velocity: 614 / Z Velocity: 520
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:52:41 2018
-
-     ID: 6 X position: 93168 / Y position: 7025 / Z position: 16280 / Entry time: 87 / X velocity: 512 / Y Velocity: 614 / Z Velocity: 520
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:52:51 2018
-
-     ID: 6 X position: 98288 / Y position: 13165 / Z position: 21480 / Entry time: 87 / X velocity: 512 / Y Velocity: 614 / Z Velocity: 520
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:53:01 2018
-
-     **The airspace is currently empty at this time**
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:53:11 2018
-
-     ID: 9 X position: 32874 / Y position: 1148 / Z position: 8678 / Entry time: 129 / X velocity: 437 / Y Velocity: 574 / Z Velocity: 339
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:53:21 2018
-
-     ID: 9 X position: 37244 / Y position: 6888 / Z position: 12068 / Entry time: 129 / X velocity: 437 / Y Velocity: 574 / Z Velocity: 339
-     ID: 10 X position: 54544 / Y position: 4304 / Z position: 5536 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:53:31 2018
-
-     ID: 9 X position: 41614 / Y position: 12628 / Z position: 15458 / Entry time: 129 / X velocity: 437 / Y Velocity: 574 / Z Velocity: 339
-     ID: 10 X position: 60224 / Y position: 9684 / Z position: 7456 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
-     ID: 12 X position: 30392 / Y position: 95662 / Z position: 9202 / Entry time: 142 / X velocity: -512 / Y Velocity: -482 / Z Velocity: 578
-     ID: 11 X position: 86817 / Y position: 4020 / Z position: 3411 / Entry time: 140 / X velocity: 347 / Y Velocity: 529 / Z Velocity: -599
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:53:41 2018
-
-     ID: 9 X position: 45984 / Y position: 18368 / Z position: 18848 / Entry time: 129 / X velocity: 437 / Y Velocity: 574 / Z Velocity: 339
-     ID: 10 X position: 65904 / Y position: 15064 / Z position: 9376 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
-     ID: 12 X position: 25272 / Y position: 90842 / Z position: 14982 / Entry time: 142 / X velocity: -512 / Y Velocity: -482 / Z Velocity: 578
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:53:51 2018
-
-     ID: 9 X position: 50354 / Y position: 24108 / Z position: 22238 / Entry time: 129 / X velocity: 437 / Y Velocity: 574 / Z Velocity: 339
-     ID: 10 X position: 71584 / Y position: 20444 / Z position: 11296 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
-     ID: 12 X position: 20152 / Y position: 86022 / Z position: 20762 / Entry time: 142 / X velocity: -512 / Y Velocity: -482 / Z Velocity: 578
-
----------------------------------------------------------------------------------
-Airspace status at: Sat Dec  1 17:54:01 2018
-
-     ID: 10 X position: 77264 / Y position: 25824 / Z position: 13216 / Entry time: 133 / X velocity: 568 / Y Velocity: 538 / Z Velocity: 192
 
 ---------------------------------------------------------------------------------

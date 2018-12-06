@@ -9,42 +9,84 @@
 #include <ctime>
 #include "Aircraft.cpp"
 #include <fstream>
+#include <cmath>
 
 #pragma warning(disable:4996)
 
-using namespace std;
+vector<Aircraft> Hit;
 
-//LIST OF ALL PLANES CURRENTLY IN THE SPACE
-vector<Aircraft> Hit; 
+vector<Aircraft> listOfAircraftAdded;
+
+using namespace std;
 
 // ATC data and functions handling
 
-// Communications
-void communicationsHandler(Aircraft& aircraftID, int aNumber, bool sign) { // messages in queues
+void updateLog(Aircraft& airplane) {
 
-	int result;
-	int finalResult;
-	int z_cood = aircraftID.getZ_coord();
-
-	if (sign = true) {
-		result = aNumber * 1000;
-		finalResult = z_cood + result;
-
-		aircraftID.setZ_coord(finalResult);
-	}
-	else
+	for (int i = 0; i < Hit.size(); i++)
 	{
-		result = aNumber * 1000;
-		finalResult = z_cood - result;
+		int aircraftListId = Hit[i].getId();
+		int id = airplane.getId();
 
-		aircraftID.setZ_coord(finalResult);
+		if (aircraftListId == id) {
+			Hit[i].setX_coord(airplane.getX_coord());
+			Hit[i].setY_coord(airplane.getY_coord());
+			Hit[i].setZ_coord(airplane.getZ_coord());
+		}
 	}
 
+	for (int i = 0; i < listOfAircraftAdded.size(); i++)
+	{
+		int aircraftListId = listOfAircraftAdded[i].getId();
+		int id = airplane.getId();
+
+		if (aircraftListId == id) {
+			listOfAircraftAdded[i].setX_coord(airplane.getX_coord());
+			listOfAircraftAdded[i].setY_coord(airplane.getY_coord());
+			listOfAircraftAdded[i].setZ_coord(airplane.getZ_coord());
+		}
+	}
+}
+
+// Communications
+void communicationsAltitudeHandler(int aircraftID, int aNumber, int sign) { // messages in queues
+
+	int z_coord = 0;
+	int counter = 0;
+
+	// change altitude
+	for (int i = 0; i < Hit.size(); i++)
+	{
+		if (aircraftID == Hit[i].getId()) {
+
+			z_coord = Hit[i].getZ_coord();
+
+			if (sign == 1) {
+
+				z_coord += (aNumber*1000);
+				Hit[i].setZ_coord(z_coord);
+				updateLog(Hit[i]);
+				cout << "Aircraft with ID: " << Hit[i].getId() << " --> Climb to " << z_coord << " feet." << endl;
+			}
+			else if (sign == 0) {
+				z_coord -= (aNumber*1000);
+				Hit[i].setZ_coord(z_coord);
+				updateLog(Hit[i]);
+				cout << "Aircraft with ID: " << Hit[i].getId() << " --> Descend to " << z_coord << " feet." << endl;
+			}
+			break;
+		}
+		else
+			counter++;
+	}
+	if (counter == Hit.size()) {
+		cout << "Aircraft with ID: " << aircraftID << " not found in airspace." << endl;
+	}
 }
 
 void send(int aircraftID, string msg) {
 
-	cout << "To the aircraft with ID: " + aircraftID << endl;
+	cout << "To the aircraft with ID: " << aircraftID << endl;
 	cout << "Please " + msg << endl;
 
 }
@@ -57,7 +99,107 @@ void detectLostObjects(int aircraftID) {
 	if (aircraftID < 0) {
 		string msg = "Identify yourselves";
 		broadcast(msg);
-	
+	}
+}
+
+void communicationSpeedHandler(int aircraftID, int speedValue_x, int speedValue_y, int speedValue_z) {
+
+	// change speed
+
+	int counter = 0;
+
+	for (int i = 0; i < Hit.size(); i++)
+	{
+		if (aircraftID == Hit[i].getId()) {
+
+			Hit[i].setXSpeed(speedValue_x);
+			Hit[i].setYSpeed(speedValue_y);
+			Hit[i].setZSpeed(speedValue_z);
+
+			updateLog(Hit[i]);
+			break;
+		}
+		else
+			counter++;
+	}
+
+	if (counter == Hit.size()) {
+		cout << "Aircraft with ID: " << aircraftID << " not found in airspace." << endl;
+	}
+}
+
+void userInput() {
+
+	// ATC controls and communicates will only aircraft or lost objects from the airspace
+
+	string input;
+	while (true) {
+		getline(cin, input);
+
+		if (input == "send") {
+			cout << "To which aircraft by ID from 0 to 20?";
+
+			string message, id;
+
+			getline(cin, id);
+
+			cout << "Enter the message: ";
+			getline(cin, message);
+			send(atoi(id.c_str()), message);
+		}
+
+		if (input == "broadcast") {
+			cout << "Enter the message: ";
+
+			string message;
+			getline(cin, message);
+			broadcast(message);
+		}
+
+		if (input == "altitude change") {
+
+			string id_string, upOrDown, n;
+			int counter = 0;
+
+			cout << "Aircraft ID to change altitude: ";
+			getline(cin, id_string);
+			int id_int = atoi(id_string.c_str());
+
+			cout << "Enter 1 for climb, 0 for descend: ";
+			getline(cin, upOrDown);
+			int upOrDown_bool = atoi(upOrDown.c_str());
+
+			cout << "Enter n amount of altitude change (n*1000): ";
+			getline(cin, n);
+			int n_int = atoi(n.c_str());
+
+			communicationsAltitudeHandler(id_int, n_int, upOrDown_bool);
+		}
+
+		if (input == "speed change") {
+			
+			string message, id_string, speedValue_x, speedValue_y, speedValue_z;
+
+			cout << "Aircraft ID to change speed: ";
+			getline(cin, id_string);
+			int id_int = atoi(id_string.c_str());
+
+			cout << "Change speed in x, y and z:  " << endl;
+			cout << "New speed in x: ";
+			getline(cin, speedValue_x);
+			int speed_x = atoi(speedValue_x.c_str());
+
+			cout << "New speed in y: ";
+			getline(cin, speedValue_y);
+			int speed_y = atoi(speedValue_y.c_str());
+
+			cout << "New speed in z: ";
+			getline(cin, speedValue_z);
+			int speed_z = atoi(speedValue_z.c_str());
+
+
+			communicationSpeedHandler(id_int, speed_x, speed_y, speed_z);
+		}
 	}
 }
 
@@ -82,6 +224,7 @@ void addToLog(Aircraft& airplane, int x, int y, int z) {
 			
 			if ((id < 0) && (x_hit != x) && (y_hit != y) && (z_hit != z)) { // means that lost object, still add into hit list because id can be the same
 				Hit.push_back(airplane);
+				detectLostObjects(airplane.getId());
 				break;
 			}
 			else if (aircraftListId == id) 
@@ -101,7 +244,7 @@ void addToLog(Aircraft& airplane, int x, int y, int z) {
 
 
 // when aircraft leaves airspace
-void deleteFromLog(Aircraft& airplane, int x, int y, int z) {
+void deleteFromLog (Aircraft& airplane, int x, int y, int z) {
 
 	int id = airplane.getId();
 
@@ -123,23 +266,86 @@ void deleteFromLog(Aircraft& airplane, int x, int y, int z) {
 	}
 }
 
-void updateLog(Aircraft& airplane) {
-
-	for (int i = 0; i < Hit.size(); i++)
-	{
-		int aircraftListId = Hit[i].getId();
-		int id = airplane.getId();
-
-		if (aircraftListId == id) {
-			Hit[i].setX_coord(airplane.getX_coord());
-			Hit[i].setY_coord(airplane.getY_coord());
-			Hit[i].setZ_coord(airplane.getZ_coord());
-		}
-	}
-}
-
 void collisionAvoidance() {
 
+	// Compare each aircraft together from the hit least to detect collisions
+
+	int size = Hit.size();
+	bool collision = false;
+
+	for (int i = 0; i < size-1; i++)
+	{
+		int x_a1 = listOfAircraftAdded[i].getX_coord();
+		int y_a1 = listOfAircraftAdded[i].getY_coord();
+		int z_a1 = listOfAircraftAdded[i].getZ_coord();
+
+		int x_a1Hit = Hit[i].getX_coord();
+		int y_a1Hit = Hit[i].getY_coord();
+		int z_a1Hit = Hit[i].getZ_coord();
+
+		for (int j = size-1; j > i; j--)
+		{
+			int x_a2 = listOfAircraftAdded[j].getX_coord();
+			int y_a2 = listOfAircraftAdded[j].getY_coord();
+			int z_a2 = listOfAircraftAdded[j].getZ_coord();
+
+			int x_a2Hit = Hit[j].getX_coord();
+			int y_a2Hit = Hit[j].getY_coord();
+			int z_a2Hit = Hit[j].getZ_coord();
+
+			int x_difference = abs(x_a1 - x_a2); // absolute value of the difference between both aircraft distance
+			int y_difference = abs(y_a1 - y_a2);
+			int z_difference = abs(z_a1 - z_a2);
+
+			int x_differenceHit = abs(x_a1Hit - x_a2Hit); // absolute value of the difference between both aircraft distance
+			int y_differenceHit = abs(y_a1Hit - y_a2Hit);
+			int z_differenceHit = abs(z_a1Hit - z_a2Hit);
+
+			if ((z_difference <= 1000) && (x_difference <= 3) && (y_difference <= 3)) 
+			{	
+				int speed_x = listOfAircraftAdded[j].getXSpeed();
+				int speed_y = listOfAircraftAdded[j].getYSpeed();
+				
+				collision = true;
+				
+
+				// Make the plane go to the opposite direction to avoid collision
+
+				if (speed_x != 0) {
+					listOfAircraftAdded[j].setXSpeed((speed_x)*-1);
+					updateLog(listOfAircraftAdded[j]);
+				}
+				else {
+					listOfAircraftAdded[j].setYSpeed((speed_y)*-1);
+					updateLog(listOfAircraftAdded[j]);
+				}
+			}
+
+			if ((z_differenceHit <= 1000) && (x_differenceHit <= 3) && (y_differenceHit <= 3))
+			{
+				int speed_x = Hit[j].getXSpeed();
+				int speed_y = Hit[j].getYSpeed();
+
+				collision = true;
+
+
+				// Make the plane go to the opposite direction to avoid collision
+
+				if (speed_x != 0) {
+					Hit[j].setXSpeed((speed_x)*-1);
+					updateLog(Hit[j]);
+				}
+				else {
+					listOfAircraftAdded[j].setYSpeed((speed_y)*-1);
+					updateLog(Hit[j]);
+				}
+			}
+
+			if (collision)
+				cout << "Collision warning!" << endl;
+		}
+	}
+	
 }
 
 void aircraftMovement(Aircraft& airplane) { // pass by reference in order to update and save the new position values
@@ -177,7 +383,7 @@ void historyLog(ostream &file) {
 	{
 		for (int i = 0; i < Hit.size(); i++)
 		{
-			file << "     ID: " << Hit[i].getId() << " " << "X position: " << Hit[i].getX_coord() << " / " << "Y position: " << Hit[i].getY_coord()
+			file << "     ID: " << Hit[i].getId() << " --> " << "X position: " << Hit[i].getX_coord() << " / " << "Y position: " << Hit[i].getY_coord()
 				<< " / " << "Z position: " << Hit[i].getZ_coord() << " / " << "Entry time: " << Hit[i].getEntryTime() << " / " << "X velocity: " << Hit[i].getXSpeed()
 				<< " / " << "Y Velocity: " << Hit[i].getYSpeed() << " / " << "Z Velocity: " << Hit[i].getZSpeed() << endl;
 		}
@@ -187,7 +393,7 @@ void historyLog(ostream &file) {
 
 // display all aircraft from the airspace
 // every 5 seconds to see the changes in the airspace
-void displayAirspace() { 
+void displayAirspace() {
 
 	cout << endl;
 	for (int i = 0; i < Hit.size(); i++)
@@ -207,58 +413,49 @@ void displayAirspace() {
 			// don't display if out of airspace... do nothing
 		}
 		else {
-			cout << "aircraft --> " << id << ", (" << x << "," << y << "," << z << "), ";
-
-			float speedValue = pow(x_speed, 2) + pow(y_speed, 2) + pow(z_speed, 2);
-
-			cout << "current speed: " << pow(speedValue, 0.5) << ", entry time: " << entryTime << "s.";
-			cout << endl << endl;
+			cout << "aircraft --> " << id << ", (" << x << "," << y << "," << z << "), entry time: " << entryTime << "s. (";
+			cout << "X velocity: " << Hit[i].getXSpeed() << " / " << "Y Velocity: " << Hit[i].getYSpeed() << " / " << "Z Velocity: " << Hit[i].getZSpeed() << ")" << endl << endl;
 		}
 	}
-	cout << "--------------------------------------------------------------------------------------------" << endl;
-}
-
-// detect or handle any failures including missed deadlines and failure of an aircraft to respond to an operator command
-void failures() {
-
+	cout << "----------------------------------------------------------------------------------------------------" << endl;
 }
 
 // scan airspace every 15 seconds
 // maintain database (trackfile) log
 // executes every 15 seconds to scan airplanes from the airfield
 
-void trackerFile(vector<Aircraft>& listOfAircraft) {
+void trackerFile() {
 
-	for (int i = 0; i < listOfAircraft.size(); i++)
+	for (int i = 0; i < listOfAircraftAdded.size(); i++)
 	{
 		// airspace dimensions are 100 x 100 miles (x,y) --> coordinates starts at origin from a corner, therefore 0 to 100000 in x and y
 		// height is 25000 ft --> from 0 to 25000 feet
-		int x = listOfAircraft[i].getX_coord();
-		int y = listOfAircraft[i].getY_coord();
-		int z = listOfAircraft[i].getZ_coord();
+		int x = listOfAircraftAdded[i].getX_coord();
+		int y = listOfAircraftAdded[i].getY_coord();
+		int z = listOfAircraftAdded[i].getZ_coord();
 
-		addToLog(listOfAircraft[i], x, y, z);
-		deleteFromLog(listOfAircraft[i], x, y, z);
-		aircraftMovement(listOfAircraft[i]);
+		addToLog(listOfAircraftAdded[i], x, y, z);
+		deleteFromLog(listOfAircraftAdded[i], x, y, z);
+		aircraftMovement(listOfAircraftAdded[i]);
 	}
 }
 
 // Multithreading of timers
 
 // create thread for tracker file (radar) 
-void start_timer_tracker(function<void(vector<Aircraft>&)> func, vector<Aircraft>& listOfAircraft , unsigned int interval)
+void start_timer_tracker(function<void()> func, unsigned int interval)
 {
-	thread([func, &listOfAircraft, interval]() {
+	thread([func, interval]() {
 		while (true)
 		{
-			func(listOfAircraft);
+			func();
 			this_thread::sleep_for(chrono::seconds(interval));
 		}
 	}).detach();
 }
 
 // Create thread for the display function
-void start_timer_display(function<void(void)> func, unsigned int interval)
+void start_timer_display(function<void()> func, unsigned int interval)
 {
 	thread([func, interval]() {
 		while (true)
@@ -270,12 +467,12 @@ void start_timer_display(function<void(void)> func, unsigned int interval)
 }
 
 // Create thread for the clock / release time configuration
-void start_timer_clock(function<void(vector<Aircraft>&, vector<Aircraft>& , int&)> func, vector<Aircraft>& airplane_list, vector<Aircraft>& listOfAircraft, int &counter, unsigned int interval)
+void start_timer_clock(function<void(vector<Aircraft>& , int&)> func, vector<Aircraft>& airplane_list, int &counter, unsigned int interval)
 {
-	thread([func, &airplane_list, &listOfAircraft,&counter, interval]() {
+	thread([func, &airplane_list,&counter, interval]() {
 		while (true)
 		{
-			func(airplane_list, listOfAircraft, counter);
+			func(airplane_list, counter);
 			this_thread::sleep_for(chrono::seconds(interval));
 		}
 	}).detach();
@@ -294,7 +491,19 @@ void start_timer_history(function<void(ofstream&)> func, ofstream& file, unsigne
 	}).detach();
 }
 
-void entryTime_counter(vector<Aircraft>& airplane_list, vector<Aircraft>& listOfAircraftAdded, int& counter) {
+// Create thread for collision detection process
+void start_timer_collision(function<void()> func, unsigned int interval) {
+
+	thread([func, interval]() {
+		while (true)
+		{
+			func();
+			this_thread::sleep_for(chrono::seconds(interval));
+		}
+	}).detach();
+}
+
+void entryTime_counter(vector<Aircraft>& airplane_list, int& counter) {
 	
 	counter++;
 
@@ -303,7 +512,7 @@ void entryTime_counter(vector<Aircraft>& airplane_list, vector<Aircraft>& listOf
 
 	for (int i = 0; i < airplane_list.size(); i++)
 	{
-		Aircraft airplane = airplane_list[i];
+		Aircraft airplane = airplane_list[i];  
 		int entryTime = airplane.getEntryTime();
 
 		if (entryTime == counter) {
@@ -312,19 +521,42 @@ void entryTime_counter(vector<Aircraft>& airplane_list, vector<Aircraft>& listOf
 	}
 }
 
+void thread_reader(function<void()> func) {
+
+	thread([func]() {
+		while (true)
+		{
+			func();
+		}
+	}).detach();
+}
+
 
 // will handle the sporadic and periodic jobs/processes
 // Every operator sporadic inputs must be completed within 2 seconds
 
-void scheduler(vector<Aircraft>& listOfAircraft) {
+void scheduler(vector<Aircraft>& airplane_list, int& counter, ofstream& file) {
 
-	start_timer_tracker(trackerFile, listOfAircraft, 1);
+	// sporadic operator / user inputs processes
+	thread_reader(userInput);
+
+	// Handling of aircrafts entry time
+	start_timer_clock(entryTime_counter, airplane_list, counter, 1);
+
+	// Update history log every 60 seconds as specified in requirements
+	start_timer_history(historyLog, file, 20);
+
+	// Scan airspace for aircrafts
+	start_timer_tracker(trackerFile, 2);
+
+	// Check for collisions every second
+	start_timer_collision(collisionAvoidance, 1);
+
+	// Display airspace every 5 seconds
 	start_timer_display(displayAirspace, 5);
 }
 
 int main() {
-
-	vector<Aircraft> listOfAircraftAdded;
 	int counter = 0;
 	ofstream file;
 	file.open("historyLog.txt");
@@ -334,29 +566,6 @@ int main() {
 	cout << "The local date and time is: " << ctime(&timenow) << endl;
 
 	// each line represents an aircraft (ID, speed_x, speed_y, speed_z, x, y, z, entry time)
-	int airplane_schedule[160] = 
-	{ 
-		0, -641, 283, 500, 95000, 101589, 10000, 13, // a1
-		1, -223, -630, -526, 71000, 100000, 13000, 16, // a2
-		-1, -180, -446, -186, 41000, 100000, 6000, 31, // a3
-		3, 474, -239, 428, 38000, 0, 14000, 44, // a4
-		-1, -535, 520, 360, 95000, 100000, 1000, 49, // a5 
-		-1, -164, -593, -501, 83000, 100000, 12000, 67, // a6
-		6, 512, 614, 520, 86000, -1571, 9000, 87, // a7
-		7, -275, 153, -399, 47000, 100000, 12000, 103, // a8
-		8, -129, 525, -300, 92000, 100000, 1000, 123, // a9
-		9, 437, 574, 339, 32000, 0, 8000, 129, // a10
-		10, 568, 538, 192, 50000, 0, 4000, 133, // a11
-		11, 347, 529, -599, 83000, -1799, 10000, 140, // a12
-		12, -512, -482, 578, 35000, 100000, 4000, 142, // a13
-		13, 619, -280, 194, 74000, 0, 10000, 157, // a14
-		14, -141, 427, -321, 41000, 102251, 11000, 165, // a15
-		15, -199, 242, -205, 56000, 100000, 4000, 172, // a16
-		16, 315, -197, -365, 77000, 0, 1000, 187, // a17
-		17, -138, 455, 602, 23000, 102290, 14000, 199, // a18
-		18, -150, 557, -356, 38000, 100000, 1000, 204, // a19
-		19, 194, 184, 598, 35000, 0, 2000, 221, // a20
-	};
 
 	Aircraft a1(0, -641, 283, 500, 95000, 101589, 10000, 13);
 	Aircraft a2(1, -223, -630, -526, 71000, 100000, 13000, 16);
@@ -381,10 +590,18 @@ int main() {
 	
 	vector<Aircraft> airplane_list = {a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20};
 
-	start_timer_clock(entryTime_counter, airplane_list, listOfAircraftAdded, counter, 1);
-	start_timer_history(historyLog, file, 10);
-	scheduler(listOfAircraftAdded);
 
+	Aircraft at1(1, 1, 1, 40, 40000, 40000, 2000, 5);
+	Aircraft at2(2, 1, 1, 40, 20000, 20000, 4000, 6);
+	Aircraft at3(3, 1, 1, 40, 35000, 0, 6000, 8);
+	Aircraft at4(4, 1, 1, 40, 1000, 1000, 8000, 10);
+	Aircraft at5(5, 1, 1, 40, 80000, 0, 10000, 13);
+	Aircraft at6(6, 1, 1, 40, 70000, 0, 12000, 20);
+
+
+	//vector<Aircraft> airplane_list = { at1, at2, at3, at4, at5, at6 };
+
+	scheduler(airplane_list, counter, file); 
 	while (true);
 
 	file.close();
