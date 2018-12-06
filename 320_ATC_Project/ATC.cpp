@@ -49,13 +49,12 @@ void updateLog(Aircraft& airplane) {
 }
 
 // Communications
-void communicationsHandler(int aircraftID, int aNumber, int sign) { // messages in queues
+void communicationsAltitudeHandler(int aircraftID, int aNumber, int sign) { // messages in queues
 
 	int z_coord = 0;
 	int counter = 0;
 
 	// change altitude
-
 	for (int i = 0; i < Hit.size(); i++)
 	{
 		if (aircraftID == Hit[i].getId()) {
@@ -67,28 +66,22 @@ void communicationsHandler(int aircraftID, int aNumber, int sign) { // messages 
 				z_coord += (aNumber*1000);
 				Hit[i].setZ_coord(z_coord);
 				updateLog(Hit[i]);
-
 				cout << "Aircraft with ID: " << Hit[i].getId() << " --> Climb to " << z_coord << " feet." << endl;
 			}
-			else if (sign == 0)
-			{
+			else if (sign == 0) {
 				z_coord -= (aNumber*1000);
 				Hit[i].setZ_coord(z_coord);
 				updateLog(Hit[i]);
-
 				cout << "Aircraft with ID: " << Hit[i].getId() << " --> Descend to " << z_coord << " feet." << endl;
 			}
-
 			break;
 		}
 		else
 			counter++;
 	}
-
 	if (counter == Hit.size()) {
 		cout << "Aircraft with ID: " << aircraftID << " not found in airspace." << endl;
 	}
-
 }
 
 void send(int aircraftID, string msg) {
@@ -180,7 +173,7 @@ void userInput() {
 			getline(cin, n);
 			int n_int = atoi(n.c_str());
 
-			communicationsHandler(id_int, n_int, upOrDown_bool);
+			communicationsAltitudeHandler(id_int, n_int, upOrDown_bool);
 		}
 
 		if (input == "speed change") {
@@ -551,7 +544,7 @@ void scheduler(vector<Aircraft>& airplane_list, int& counter, ofstream& file) {
 	start_timer_clock(entryTime_counter, airplane_list, counter, 1);
 
 	// Update history log every 60 seconds as specified in requirements
-	start_timer_history(historyLog, file, 60);
+	start_timer_history(historyLog, file, 20);
 
 	// Scan airspace for aircrafts
 	start_timer_tracker(trackerFile, 2);
@@ -595,14 +588,18 @@ int main() {
 	Aircraft a19(18, -150, 557, -356, 38000, 100000, 1000, 204);
 	Aircraft a20(19, 194, 184, 598, 35000, 0, 2000, 221);
 	
-	//vector<Aircraft> airplane_list = {a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20};
+	vector<Aircraft> airplane_list = {a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20};
 
 
-	Aircraft at1(17, -1, -1, 40, 40000, 40000, 14000, 5);
-	Aircraft at2(18, -1, -1, 40, 40000, 40000, 14000, 6);
-	Aircraft at3(19, 194, 184, 598, 35000, 0, 2000, 8);
+	Aircraft at1(1, 1, 1, 40, 40000, 40000, 2000, 5);
+	Aircraft at2(2, 1, 1, 40, 20000, 20000, 4000, 6);
+	Aircraft at3(3, 1, 1, 40, 35000, 0, 6000, 8);
+	Aircraft at4(4, 1, 1, 40, 1000, 1000, 8000, 10);
+	Aircraft at5(5, 1, 1, 40, 80000, 0, 10000, 13);
+	Aircraft at6(6, 1, 1, 40, 70000, 0, 12000, 20);
 
-	vector<Aircraft> airplane_list = { at1, at2 };
+
+	//vector<Aircraft> airplane_list = { at1, at2, at3, at4, at5, at6 };
 
 	scheduler(airplane_list, counter, file); 
 	while (true);
